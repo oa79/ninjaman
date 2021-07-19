@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>NinjaMan Challenge</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .row {
+            line-height: 0;
+        }
+        .wall {
+            background-color: blue;
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+        }
+        .sushi {
+            background-color: black;
+            height: 40px;
+            width: 40px;
+            background-image: url("./img/sushi.png");
+            background-size: contain;
+            display: inline-block;
+        }
+        .onigiri {
+            background-color: black;
+            height: 40px;
+            width: 40px;
+            background-image: url("./img/onigiri.png");
+            background-size: contain;
+            display: inline-block;
+        }
+        .blank {
+            background-color: black;
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+        }
+        #ninjaman {
+            background-color: black;
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+            background-image: url("./img/ninja.gif");
+            background-size: contain;
+            position: absolute;
+            left: 40px;
+            top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div id = "world">
+        <!--         
+        <div class = "row">
+            <div class = "wall"></div>
+            <div class = "wall"></div>
+            <div class = "wall"></div>
+            <div class = "wall"></div>
+            <div class = "wall"></div>
+        </div>
+        <div class = "row">
+            <div class = "wall"></div>
+            <div class = "wall"></div>
+            <div class = "blank"></div>
+            <div class = "wall"></div>
+            <div class = "sushi"></div>
+        </div>
+        <div class = "row">
+            <div class = "wall"></div>
+            <div class = "wall"></div>
+            <div class = "wall"></div>
+            <div class = "wall"></div>
+            <div class = "wall"></div>
+        </div>
+        <div class = "row">
+            <div class = "wall"></div>
+            <div class = "wall"></div>
+            <div class = "blank"></div>
+            <div class = "wall"></div>
+            <div class = "wall"></div>
+        </div>
+        <div class = "row">
+            <div class = "wall"></div>
+            <div class = "wall"></div>
+            <div class = "wall"></div>
+            <div class = "sushi"></div>
+            <div class = "wall"></div>
+        </div> -->
+    </div>
+    <div id = "ninjaman"></div>
+    <div id = "ninjascore">
+        <h1>Score: <span id = "sushiScore">0</span></h1>
+    </div>
+</body>
+
+<script>
+    var world = [
+        [1,1,1,1,1],
+        [1,0,2,3,1],
+        [1,3,2,0,1],
+        [1,2,0,3,1],
+        [1,0,1,0,1],
+        [1,2,1,0,1],
+        [1,0,0,2,1],
+        [1,3,2,2,1],
+        [1,0,0,0,1],
+        [1,2,1,2,1],
+        [1,2,1,3,1],
+        [1,0,0,2,1],
+        [1,0,2,0,1],
+        [1,0,2,3,1],
+        [1,1,1,1,1],
+    ];
+
+    var worldDict = {
+        0: 'blank',
+        1: 'wall',
+        2: 'sushi',
+        3: 'onigiri'
+    };
+
+    // drawing the HTML stuff with JS, so we can dynamically update it, & make our code more efficient
+    function drawWorld() { 
+        var output = "";
+        for (var row = 0; row < world.length; row ++) {
+            output = output + "<div class = 'row'>"
+
+            for (var x = 0; x < world[row].length; x++) {
+                output = output + "<div class = '" + worldDict[world[row][x]] + "''></div>"
+                // console.log("value: ", worldDict[world[row][x]]); 
+                // worldDict[world[row][x]] -- a way of mapping the values of the keys in the worldDict object, as the values of an array within an array of the world variable
+            }
+            output = output + "</div>";
+        }
+        document.getElementById('world').innerHTML = output;
+    }
+    drawWorld();
+    // ---------
+
+    // we want ninjaMan to NOT be able to go on the wall i.e. array value 1 in the world array
+    // so we must write a statement that prevents him from doing so
+    // Part 1:
+    var coordinateNinjaman = {
+        x: 1,
+        y: 1
+    };
+
+    // var leftValue = 40; topValue = 40; direction = 'down';
+    // Part 2:
+    function update() { // set coordinateNinjaman.x as x axis, and coordinateNinjaman.y as y axis
+        document.getElementById('ninjaman').style.top = coordinateNinjaman.y * 40 + 'px';
+        document.getElementById('ninjaman').style.left = coordinateNinjaman.x * 40 + 'px';
+    }
+
+    // how to access values within arrays of an array:
+    // console.log(world); // prints the entire array
+    // console.log(world[coordinateNinjaman.y]); // prints an entire array row
+    // console.log(world[coordinateNinjaman.y][coordinateNinjaman.x]); // prints the index value of the array
+
+    document.onkeydown = function(e) {
+        // console.log(e);
+        if (e.keyCode == 37) { // LEFT
+            if(world[coordinateNinjaman.y][coordinateNinjaman.x - 1] != 1) {  // Part 3
+                coordinateNinjaman.x--;   // unless array value is 1 i.e. a wall, move ninjaman left
+            }
+        };
+        if (e.keyCode == 39) { // RIGHT
+            if(world[coordinateNinjaman.y][coordinateNinjaman.x + 1] != 1) {
+                console.log(world[coordinateNinjaman.y][coordinateNinjaman.x + 1]);
+                coordinateNinjaman.x++;
+            };
+        };
+        if (e.keyCode == 40) { // DOWN
+            if(world[coordinateNinjaman.y + 1][coordinateNinjaman.x] != 1) {
+                coordinateNinjaman.y++;
+            };
+        };
+        if (e.keyCode == 38) { // TOP
+            if(world[coordinateNinjaman.y - 1][coordinateNinjaman.x] != 1) {
+                coordinateNinjaman.y--;
+            }
+        };
+        update();    // moves ninjaman
+        ninjaEat();  // updates values in world array when ninjaman 'eats' a sushi, & increments score
+        drawWorld(); // re-creates 'world' / the HTML code to reflect updated array values
+    }
+
+    var sushiCount = 0;
+    function ninjaEat() {
+        if(world[coordinateNinjaman.y][coordinateNinjaman.x] == 2) {  // if ninjaman eat sushi
+            sushiCount = sushiCount + 10;                             // increase sushiCount by 10
+        }
+        else if (world[coordinateNinjaman.y][coordinateNinjaman.x] == 3) { // else if ninjaman eat onigiri
+            sushiCount = sushiCount + 5;                              // increase sushiCount by 5
+        };
+        world[coordinateNinjaman.y][coordinateNinjaman.x] = 0;        // make array val 0, blank, once food eaten
+        document.getElementById('sushiScore').innerHTML = sushiCount; // print score to HTML - to sushiScore ID
+    };
+
+</script>
+
+</html>
